@@ -21,5 +21,8 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v2
 
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v2
+
       - name: Run tests
         run: make ci
