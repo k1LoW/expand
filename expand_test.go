@@ -93,3 +93,49 @@ multi: |
 		}
 	}
 }
+
+func TestReplaceYAML(t *testing.T) {
+	tests := []struct {
+		in            string
+		envs          map[string]string
+		replaceMapKey bool
+		want          string
+	}{
+		{
+			`key: ${VALUE}
+${KEY}: value
+`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			false,
+			`key: envvalue
+${KEY}: value
+`},
+		{
+			`key: ${VALUE}
+${KEY}: value
+`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: envvalue
+envkey: value
+`},
+	}
+	replacefunc := func(in string) string {
+		return os.Expand(in, os.Getenv)
+	}
+	for _, tt := range tests {
+		for k, v := range tt.envs {
+			t.Setenv(k, v)
+		}
+		got := ReplaceYAML(tt.in, replacefunc, tt.replaceMapKey)
+		if got != tt.want {
+			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
+		}
+	}
+}

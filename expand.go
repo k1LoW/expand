@@ -10,8 +10,8 @@ import (
 	"github.com/goccy/go-yaml/token"
 )
 
-// ReplaceYAML replaces the values of YAML (string) using replacefunc.
-func ReplaceYAML(s string, replacefunc func(s string) string) string {
+// ReplaceYAML replaces the tokens of YAML (string) using replacefunc.
+func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool) string {
 	tokens := lexer.Tokenize(s)
 	if len(tokens) == 0 {
 		return ""
@@ -21,7 +21,7 @@ func ReplaceYAML(s string, replacefunc func(s string) string) string {
 		lines := strings.Split(tk.Origin, "\n")
 		expand := false
 		quote := false
-		if tk.NextType() != token.MappingValueType {
+		if replaceMapKey || tk.NextType() != token.MappingValueType {
 			switch tk.Type {
 			case token.StringType, token.SingleQuoteType, token.DoubleQuoteType:
 				expand = true
@@ -80,7 +80,7 @@ func ExpandYAML(s string, mapping func(string) string) string {
 	replacefunc := func(in string) string {
 		return os.Expand(in, mapping)
 	}
-	return ReplaceYAML(s, replacefunc)
+	return ReplaceYAML(s, replacefunc, false)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.
