@@ -10,8 +10,8 @@ import (
 	"github.com/goccy/go-yaml/token"
 )
 
-// ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
-func ExpandYAML(s string, mapping func(string) string) string {
+// ReplaceYAML replaces the values of YAML (string) using replacefunc.
+func ReplaceYAML(s string, replacefunc func(s string) string) string {
 	tokens := lexer.Tokenize(s)
 	if len(tokens) == 0 {
 		return ""
@@ -35,7 +35,7 @@ func ExpandYAML(s string, mapping func(string) string) string {
 		if len(lines) == 1 {
 			line := lines[0]
 			if expand && line != "" {
-				line = os.Expand(line, mapping)
+				line = replacefunc(line)
 				if quote && token.IsNeedQuoted(line) {
 					old := strings.Trim(line, " ")
 					new := strconv.Quote(old)
@@ -52,7 +52,7 @@ func ExpandYAML(s string, mapping func(string) string) string {
 			for idx, src := range lines {
 				line := src
 				if expand && line != "" {
-					line = os.Expand(line, mapping)
+					line = replacefunc(line)
 					if quote && token.IsNeedQuoted(line) {
 						old := strings.Trim(line, " ")
 						new := strconv.Quote(old)
@@ -73,6 +73,14 @@ func ExpandYAML(s string, mapping func(string) string) string {
 		}
 	}
 	return fmt.Sprintf("%s\n", strings.Join(texts, "\n"))
+}
+
+// ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
+func ExpandYAML(s string, mapping func(string) string) string {
+	replacefunc := func(in string) string {
+		return os.Expand(in, mapping)
+	}
+	return ReplaceYAML(s, replacefunc)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.
