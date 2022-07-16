@@ -12,7 +12,7 @@ func TestExpandYAML(t *testing.T) {
 		want string
 	}{
 		{
-			`default: "hello ${UNKONW:-world}"
+			`default: "hello ${UNDEFINED:-world}"
 multi: |
 
   hello world
