@@ -12,6 +12,25 @@ func TestExpandYAML(t *testing.T) {
 		want string
 	}{
 		{
+			`default: "hello ${UNKONW:-world}"
+multi: |
+
+  hello world
+
+  hello ${WORLD}
+`,
+			map[string]string{
+				"WORLD": ": world :world",
+			},
+			`default: "hello world"
+multi: |
+
+  hello world
+
+  hello : world :world
+
+`},
+		{
 			`coverage:
   acceptable: ${COVERAGE_ACCEPTABLE}
   badge:
@@ -87,7 +106,7 @@ multi: |
 		for k, v := range tt.envs {
 			t.Setenv(k, v)
 		}
-		got := ExpandYAML(tt.in, os.Getenv)
+		got := ExpandYAML(tt.in, os.LookupEnv)
 		if got != tt.want {
 			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
 		}
