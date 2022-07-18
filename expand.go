@@ -6,9 +6,24 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/buildkite/interpolate"
 	"github.com/goccy/go-yaml/lexer"
 	"github.com/goccy/go-yaml/token"
 )
+
+type Mapper struct {
+	mapping func(string) (string, bool)
+}
+
+// Implement Env
+var _ interpolate.Env = Mapper{}
+
+func (m Mapper) Get(key string) (string, bool) {
+	if m.mapping == nil {
+		return "", false
+	}
+	return m.mapping(key)
+}
 
 // ReplaceYAML replaces the tokens of YAML (string) using replacefunc.
 func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool) string {
@@ -76,26 +91,31 @@ func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
-func ExpandYAML(s string, mapping func(string) string) string {
+func ExpandYAML(s string, mapping func(string) (string, bool)) string {
+	mapper := Mapper{mapping: mapping}
 	replacefunc := func(in string) string {
-		return os.Expand(in, mapping)
+		replace, err := interpolate.Interpolate(mapper, in)
+		if err != nil {
+			return in
+		}
+		return replace
 	}
 	return ReplaceYAML(s, replacefunc, false)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.
-func ExpandYAMLBytes(b []byte, mapping func(string) string) []byte {
+func ExpandYAMLBytes(b []byte, mapping func(string) (string, bool)) []byte {
 	return []byte(ExpandYAML(string(b), mapping))
 }
 
 // ExpandenvYAML replaces ${var} or $var in the values of YAML (string) according to the values
 // of the current environment variables.
 func ExpandenvYAML(s string) string {
-	return ExpandYAML(s, os.Getenv)
+	return ExpandYAML(s, os.LookupEnv)
 }
 
 // ExpandenvYAML replaces ${var} or $var in the values of YAML ([]byte) according to the values
 // of the current environment variables.
 func ExpandenvYAMLBytes(b []byte) []byte {
-	return ExpandYAMLBytes(b, os.Getenv)
+	return ExpandYAMLBytes(b, os.LookupEnv)
 }
