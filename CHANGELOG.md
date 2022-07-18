@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.0](https://github.com/k1LoW/expand/compare/v0.3.0...v0.4.0) (2022-07-18)
+
+* Support bash like interpolate [#4](https://github.com/k1LoW/expand/pull/4) ([k2tzumi](https://github.com/k2tzumi))
+
 ## [v0.3.0](https://github.com/k1LoW/expand/compare/v0.2.0...v0.3.0) (2022-03-06)
 
 * Support key replace [#3](https://github.com/k1LoW/expand/pull/3) ([k1LoW](https://github.com/k1LoW))
