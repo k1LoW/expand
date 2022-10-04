@@ -25,11 +25,12 @@ func (m Mapper) Get(key string) (string, bool) {
 	return m.mapping(key)
 }
 
-// ReplaceYAML replaces the tokens of YAML (string) using replacefunc.
-func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool) string {
+// ReplaceYAML replaces the tokens of YAML (string) using repFn.
+func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey bool) (string, error) {
+	var err error
 	tokens := lexer.Tokenize(s)
 	if len(tokens) == 0 {
-		return ""
+		return "", nil
 	}
 	texts := []string{}
 	for _, tk := range tokens {
@@ -50,7 +51,10 @@ func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool
 		if len(lines) == 1 {
 			line := lines[0]
 			if expand && line != "" {
-				line = replacefunc(line)
+				line, err = repFn(line)
+				if err != nil {
+					return "", err
+				}
 				if quote && token.IsNeedQuoted(line) {
 					old := strings.Trim(line, " ")
 					new := strconv.Quote(old)
@@ -67,7 +71,10 @@ func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool
 			for idx, src := range lines {
 				line := src
 				if expand && line != "" {
-					line = replacefunc(line)
+					line, err = repFn(line)
+					if err != nil {
+						return "", err
+					}
 					if quote && token.IsNeedQuoted(line) {
 						old := strings.Trim(line, " ")
 						new := strconv.Quote(old)
@@ -87,20 +94,14 @@ func ReplaceYAML(s string, replacefunc func(s string) string, replaceMapKey bool
 			}
 		}
 	}
-	return fmt.Sprintf("%s\n", strings.Join(texts, "\n"))
+	return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
 func ExpandYAML(s string, mapping func(string) (string, bool)) string {
-	mapper := Mapper{mapping: mapping}
-	replacefunc := func(in string) string {
-		replace, err := interpolate.Interpolate(mapper, in)
-		if err != nil {
-			return in
-		}
-		return replace
-	}
-	return ReplaceYAML(s, replacefunc, false)
+	repFn := InterpolateRepFn(mapping)
+	rep, _ := ReplaceYAML(s, repFn, false)
+	return rep
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.

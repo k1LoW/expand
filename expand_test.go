@@ -145,14 +145,17 @@ ${KEY}: value
 envkey: value
 `},
 	}
-	replacefunc := func(in string) string {
-		return os.Expand(in, os.Getenv)
+	repFn := func(in string) (string, error) {
+		return os.Expand(in, os.Getenv), nil
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
 			t.Setenv(k, v)
 		}
-		got := ReplaceYAML(tt.in, replacefunc, tt.replaceMapKey)
+		got, err := ReplaceYAML(tt.in, repFn, tt.replaceMapKey)
+		if err != nil {
+			t.Error(err)
+		}
 		if got != tt.want {
 			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
 		}
