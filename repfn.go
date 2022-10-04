@@ -27,15 +27,16 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 var numberRe = regexp.MustCompile(`^[+-]?\d+(?:\.\d+)?$`)
 
 func ExprRepFn(delimStart, delimEnd string, env interface{}) repFn {
-	const strDelim = `"`
+	const strDQuote = `"`
 	return func(in string) (string, error) {
 		if !strings.Contains(in, delimStart) {
 			return in, nil
 		}
-		if strings.Count(in, strDelim) >= 2 {
+
+		if strings.Count(in, strDQuote) >= 2 {
 			oldnew := []string{}
-			dds := fmt.Sprintf("%s%s", strDelim, delimStart)
-			dde := fmt.Sprintf("%s%s", delimEnd, strDelim)
+			dds := fmt.Sprintf("%s%s", strDQuote, delimStart)
+			dde := fmt.Sprintf("%s%s", delimEnd, strDQuote)
 			matches := substrWithDelims(dds, dde, in)
 			for _, m := range matches {
 				oldnew = append(oldnew, m[0], fmt.Sprintf("%s%s%s", delimStart, m[1], delimEnd))
@@ -43,6 +44,7 @@ func ExprRepFn(delimStart, delimEnd string, env interface{}) repFn {
 			rep := strings.NewReplacer(oldnew...)
 			in = rep.Replace(in)
 		}
+
 		matches := substrWithDelims(delimStart, delimEnd, in)
 		oldnew := []string{}
 		for _, m := range matches {
