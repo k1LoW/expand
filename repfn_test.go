@@ -42,10 +42,11 @@ func TestSubstrWithDelims(t *testing.T) {
 		in         string
 		want       [][]string
 	}{
-		{"{{", "}}", " {{ hello }} {{ value }} ", [][]string{{"{{ hello }}", "hello"}, {"{{ value }}", "value"}}},
-		{"{{", "}}", "{{ {{ hello }} {{ value }}", [][]string{{"{{ {{ hello }}", "{{ hello"}, {"{{ value }}", "value"}}},
-		{"{{", "}}", ` "{{ hello }}" "{{ value }}" `, [][]string{{`"{{ hello }}"`, "hello"}, {`"{{ value }}"`, "value"}}},
-		{"{{", "}}", `"{{ {{ hello }}" {{ value }}`, [][]string{{`"{{ {{ hello }}"`, "{{ hello"}, {"{{ value }}", "value"}}},
+		{"{{", "}}", " {{ hello }} {{ value }} ", [][]string{{"{{ hello }}", " hello "}, {"{{ value }}", " value "}}},
+		{"{{", "}}", "{{ {{ hello }} {{ value }}", [][]string{{"{{ {{ hello }}", " {{ hello "}, {"{{ value }}", " value "}}},
+		{`"{{`, `}}"`, ` "{{ hello }}" "{{ value }}" `, [][]string{{`"{{ hello }}"`, " hello "}, {`"{{ value }}"`, " value "}}},
+		{`"{{`, `}}"`, `"{{ {{ hello }}" {{ value }}`, [][]string{{`"{{ {{ hello }}"`, " {{ hello "}}},
+		{`"{{`, `}}"`, `"{{ hello }}-{{ value }}"`, [][]string{{`"{{ hello }}-{{ value }}"`, " hello }}-{{ value "}}},
 		{"%%", "%%", " {{ hello }} {{ value }} ", [][]string{}},
 	}
 	for _, tt := range tests {
@@ -82,6 +83,15 @@ func TestExprRepFn(t *testing.T) {
 			` "{{ hello }}" "{{ value }}" `,
 			" world  ",
 		},
+		{
+			"{{",
+			"}}",
+			map[string]interface{}{
+				"hello": "world",
+			},
+			` "{{ hello }}-{{ value }}" `,
+			` world- `,
+		},
 	}
 	for _, tt := range tests {
 		repFn := ExprRepFn(tt.delimStart, tt.delimEnd, tt.env)
@@ -90,7 +100,7 @@ func TestExprRepFn(t *testing.T) {
 			t.Error(err)
 		}
 		if got != tt.want {
-			t.Errorf("got %v\nwant %v", got, tt.want)
+			t.Errorf("got %#v\nwant %#v", got, tt.want)
 		}
 	}
 }

@@ -27,10 +27,24 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 var numberRe = regexp.MustCompile(`^[+-]?\d+(?:\.\d+)?$`)
 
 func ExprRepFn(delimStart, delimEnd string, env interface{}) repFn {
+	const strDQuote = `"`
 	return func(in string) (string, error) {
 		if !strings.Contains(in, delimStart) {
 			return in, nil
 		}
+
+		if strings.Count(in, strDQuote) >= 2 {
+			oldnew := []string{}
+			dds := fmt.Sprintf("%s%s", strDQuote, delimStart)
+			dde := fmt.Sprintf("%s%s", delimEnd, strDQuote)
+			matches := substrWithDelims(dds, dde, in)
+			for _, m := range matches {
+				oldnew = append(oldnew, m[0], fmt.Sprintf("%s%s%s", delimStart, m[1], delimEnd))
+			}
+			rep := strings.NewReplacer(oldnew...)
+			in = rep.Replace(in)
+		}
+
 		matches := substrWithDelims(delimStart, delimEnd, in)
 		oldnew := []string{}
 		for _, m := range matches {
@@ -79,12 +93,9 @@ func substrWithDelims(delimStart, delimEnd, in string) [][]string {
 	i := 0
 	for {
 		in = in[i:]
-		m, c := trySubstr(fmt.Sprintf(`"%s`, delimStart), fmt.Sprintf(`%s"`, delimEnd), in)
+		m, c := trySubstr(delimStart, delimEnd, in)
 		if c < 0 {
-			m, c = trySubstr(delimStart, delimEnd, in)
-			if c < 0 {
-				break
-			}
+			break
 		}
 		matches = append(matches, m)
 		i = c
@@ -105,6 +116,6 @@ func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
 		return nil, -1
 	}
 	wd := in[si : se+len(delimEnd)]
-	id := strings.TrimSpace(strings.TrimSuffix(strings.TrimPrefix(wd, delimStart), delimEnd))
+	id := strings.TrimSuffix(strings.TrimPrefix(wd, delimStart), delimEnd)
 	return []string{wd, id}, se + len(delimEnd)
 }
