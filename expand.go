@@ -26,10 +26,11 @@ func (m Mapper) Get(key string) (string, bool) {
 }
 
 // ReplaceYAML replaces the tokens of YAML (string) using repFn.
-func ReplaceYAML(s string, repFn func(s string) string, replaceMapKey bool) string {
+func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey bool) (string, error) {
+	var err error
 	tokens := lexer.Tokenize(s)
 	if len(tokens) == 0 {
-		return ""
+		return "", nil
 	}
 	texts := []string{}
 	for _, tk := range tokens {
@@ -50,7 +51,10 @@ func ReplaceYAML(s string, repFn func(s string) string, replaceMapKey bool) stri
 		if len(lines) == 1 {
 			line := lines[0]
 			if expand && line != "" {
-				line = repFn(line)
+				line, err = repFn(line)
+				if err != nil {
+					return "", err
+				}
 				if quote && token.IsNeedQuoted(line) {
 					old := strings.Trim(line, " ")
 					new := strconv.Quote(old)
@@ -67,7 +71,10 @@ func ReplaceYAML(s string, repFn func(s string) string, replaceMapKey bool) stri
 			for idx, src := range lines {
 				line := src
 				if expand && line != "" {
-					line = repFn(line)
+					line, err = repFn(line)
+					if err != nil {
+						return "", err
+					}
 					if quote && token.IsNeedQuoted(line) {
 						old := strings.Trim(line, " ")
 						new := strconv.Quote(old)
@@ -87,13 +94,14 @@ func ReplaceYAML(s string, repFn func(s string) string, replaceMapKey bool) stri
 			}
 		}
 	}
-	return fmt.Sprintf("%s\n", strings.Join(texts, "\n"))
+	return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
 func ExpandYAML(s string, mapping func(string) (string, bool)) string {
 	repFn := InterpolateRepFn(mapping)
-	return ReplaceYAML(s, repFn, false)
+	rep, _ := ReplaceYAML(s, repFn, false)
+	return rep
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.
