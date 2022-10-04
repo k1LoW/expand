@@ -48,6 +48,8 @@ func TestSubstrWithDelims(t *testing.T) {
 		{`"{{`, `}}"`, `"{{ {{ hello }}" {{ value }}`, [][]string{{`"{{ {{ hello }}"`, " {{ hello "}}},
 		{`"{{`, `}}"`, `"{{ hello }}-{{ value }}"`, [][]string{{`"{{ hello }}-{{ value }}"`, " hello }}-{{ value "}}},
 		{"%%", "%%", " {{ hello }} {{ value }} ", [][]string{}},
+		{"%%", "%%", " %% hello %% %% value %% ", [][]string{{"%% hello %%", " hello "}, {"%% value %%", " value "}}},
+		{"%%", "%%", "%% %% hello %% %% value %%", [][]string{{"%% %%", " "}, {"%% %%", " "}}},
 	}
 	for _, tt := range tests {
 		got := substrWithDelims(tt.delimStart, tt.delimEnd, tt.in)
