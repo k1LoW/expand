@@ -104,11 +104,16 @@ func substrWithDelims(delimStart, delimEnd, in string) [][]string {
 }
 
 func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
+	if delimStart == delimEnd {
+		if strings.Count(in, delimStart) < 2 {
+			return nil, -1
+		}
+	}
 	si := strings.Index(in, delimStart)
 	if si < 0 {
 		return nil, -1
 	}
-	se := strings.Index(in, delimEnd)
+	se := strings.Index(in[si+len(delimStart):], delimEnd) + si + len(delimStart)
 	if se < 0 {
 		return nil, -1
 	}
