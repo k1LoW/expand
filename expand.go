@@ -57,7 +57,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 				}
 				if quote && token.IsNeedQuoted(line) {
 					old := strings.Trim(line, " ")
-					new := strconv.Quote(old)
+					new := strQuote(old)
 					line = strings.Replace(line, old, new, 1)
 				}
 			}
@@ -77,7 +77,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 					}
 					if quote && token.IsNeedQuoted(line) {
 						old := strings.Trim(line, " ")
-						new := strconv.Quote(old)
+						new := strQuote(old)
 						line = strings.Replace(line, old, new, 1)
 					}
 				}
@@ -95,6 +95,14 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 		}
 	}
 	return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
+}
+
+func strQuote(s string) string {
+	u, err := strconv.Unquote(s)
+	if err != nil {
+		return strconv.Quote(s)
+	}
+	return strconv.Quote(u)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
