@@ -131,7 +131,8 @@ ${KEY}: value
 			false,
 			`key: envvalue
 ${KEY}: value
-`},
+`,
+		},
 		{
 			`key: ${VALUE}
 ${KEY}: value
@@ -143,7 +144,44 @@ ${KEY}: value
 			true,
 			`key: envvalue
 envkey: value
-`},
+`,
+		},
+		{
+			`key: "${VALUE}-${VALUE}"
+`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: "envvalue-envvalue"
+`,
+		},
+		{
+			`key: "${VALUE}\n${VALUE}"
+`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: "envvalue\nenvvalue"
+`,
+		},
+		{
+			`key: |
+  ${VALUE}
+  ${VALUE}`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: |
+  envvalue
+  envvalue
+`,
+		},
 	}
 	repFn := func(in string) (string, error) {
 		return os.Expand(in, os.Getenv), nil
