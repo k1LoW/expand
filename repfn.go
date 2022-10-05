@@ -113,10 +113,11 @@ func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
 	if si < 0 {
 		return nil, -1
 	}
-	se := strings.Index(in[si+len(delimStart):], delimEnd) + si + len(delimStart)
-	if se < 0 {
+	e := strings.Index(in[si+len(delimStart):], delimEnd)
+	if e < 0 {
 		return nil, -1
 	}
+	se := e + si + len(delimStart)
 	if si >= se {
 		return nil, -1
 	}
