@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.2](https://github.com/k1LoW/expand/compare/v0.5.1...v0.5.2) - 2022-10-05
+- Support same delims by @k1LoW in https://github.com/k1LoW/expand/pull/11
+- Fix trySubstr() by @k1LoW in https://github.com/k1LoW/expand/pull/13
+
 ## [v0.5.1](https://github.com/k1LoW/expand/compare/v0.5.0...v0.5.1) - 2022-10-04
 - Fix ExprRepFn by @k1LoW in https://github.com/k1LoW/expand/pull/9
 
