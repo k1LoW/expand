@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.3](https://github.com/k1LoW/expand/compare/v0.5.2...v0.5.3) - 2022-10-05
+- Fix quoting string in ReplaceYAML() by @k1LoW in https://github.com/k1LoW/expand/pull/14
+
 ## [v0.5.2](https://github.com/k1LoW/expand/compare/v0.5.1...v0.5.2) - 2022-10-05
 - Support same delims by @k1LoW in https://github.com/k1LoW/expand/pull/11
 - Fix trySubstr() by @k1LoW in https://github.com/k1LoW/expand/pull/13
