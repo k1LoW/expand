@@ -44,7 +44,12 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 				if len(lines) == 1 {
 					quote = true
 				} else if len(lines) == 2 && strings.Trim(lines[1], " ") == "" {
-					quote = true
+					if tk.Prev != nil && tk.Prev.Type == token.LiteralType && token.Type(tk.Prev.Indicator) == token.Type(token.BlockScalarIndicator) {
+						// Block scalars does not quote
+						quote = false
+					} else {
+						quote = true
+					}
 				}
 			}
 		}
