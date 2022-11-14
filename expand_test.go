@@ -101,6 +101,14 @@ multi: |
   hello : world :world
 
 `},
+		{
+			`test: |
+  current.url == 'https://example.com/#about'
+`,
+			map[string]string{},
+			`test: |
+  current.url == 'https://example.com/#about'
+`},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
