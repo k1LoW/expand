@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.4](https://github.com/k1LoW/expand/compare/v0.5.3...v0.5.4) - 2022-11-14
+- Fix quoting strings by @k1LoW in https://github.com/k1LoW/expand/pull/16
+
 ## [v0.5.3](https://github.com/k1LoW/expand/compare/v0.5.2...v0.5.3) - 2022-10-05
 - Fix quoting string in ReplaceYAML() by @k1LoW in https://github.com/k1LoW/expand/pull/14
 
