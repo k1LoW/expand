@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.5](https://github.com/k1LoW/expand/compare/v0.5.4...v0.5.5) - 2022-11-21
+- Fix InterpolateRepFn ( handling env placeholder ) by @k1LoW in https://github.com/k1LoW/expand/pull/18
+
 ## [v0.5.4](https://github.com/k1LoW/expand/compare/v0.5.3...v0.5.4) - 2022-11-14
 - Fix quoting strings by @k1LoW in https://github.com/k1LoW/expand/pull/16
 
