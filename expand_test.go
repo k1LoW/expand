@@ -116,6 +116,15 @@ multi: |
 			`key: "hello$"
 `,
 		},
+		// TODO
+		// 		{
+		// 			`key: "hello$ ${WORLD}"`,
+		// 			map[string]string{
+		// 				"WORLD": "world",
+		// 			},
+		// 			`key: "hello$ world"
+		// `,
+		// 		},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
