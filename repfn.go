@@ -16,13 +16,14 @@ type repFn func(in string) (string, error)
 var envPlaceholderRe = regexp.MustCompile(`\${.+}`)
 
 func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
+	const repToken = "__NOT_INTERPOLATE_START__"
 	mapper := Mapper{mapping: mapping}
 	return func(in string) (string, error) {
 		if !envPlaceholderRe.MatchString(in) {
 			return in, nil
 		}
-		r := strings.NewReplacer("${", "${", "$", "__NOT_INTERPOLATE_START__")
-		rr := strings.NewReplacer("__NOT_INTERPOLATE_START__", "$")
+		r := strings.NewReplacer("${", "${", "$", repToken)
+		rr := strings.NewReplacer(repToken, "$")
 
 		replace, err := interpolate.Interpolate(mapper, r.Replace(in))
 		if err != nil {
