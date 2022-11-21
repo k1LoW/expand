@@ -21,11 +21,14 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 		if !envPlaceholderRe.MatchString(in) {
 			return in, nil
 		}
-		replace, err := interpolate.Interpolate(mapper, in)
+		r := strings.NewReplacer("${", "${", "$", "__NOT_INTERPOLATE_START__")
+		rr := strings.NewReplacer("__NOT_INTERPOLATE_START__", "$")
+
+		replace, err := interpolate.Interpolate(mapper, r.Replace(in))
 		if err != nil {
 			return in, err
 		}
-		return replace, nil
+		return rr.Replace(replace), nil
 	}
 }
 
