@@ -110,12 +110,29 @@ multi: |
   current.url == 'https://example.com/#about'
 
 `},
+		{
+			`key: "hello$"`,
+			map[string]string{},
+			`key: "hello$"
+`,
+		},
+		{
+			`key: "hello$ ${WORLD}"`,
+			map[string]string{
+				"WORLD": "world",
+			},
+			`key: "hello$ world"
+`,
+		},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
 			t.Setenv(k, v)
 		}
-		got := ExpandYAML(tt.in, os.LookupEnv)
+		mapper := func(in string) (string, bool) {
+			return os.LookupEnv(in)
+		}
+		got := ExpandYAML(tt.in, mapper)
 		if got != tt.want {
 			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
 		}

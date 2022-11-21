@@ -13,14 +13,22 @@ import (
 
 type repFn func(in string) (string, error)
 
+var envPlaceholderRe = regexp.MustCompile(`\${.+}`)
+
 func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 	mapper := Mapper{mapping: mapping}
 	return func(in string) (string, error) {
-		replace, err := interpolate.Interpolate(mapper, in)
+		if !envPlaceholderRe.MatchString(in) {
+			return in, nil
+		}
+		r := strings.NewReplacer("${", "${", "$", "__NOT_INTERPOLATE_START__")
+		rr := strings.NewReplacer("__NOT_INTERPOLATE_START__", "$")
+
+		replace, err := interpolate.Interpolate(mapper, r.Replace(in))
 		if err != nil {
 			return in, err
 		}
-		return replace, nil
+		return rr.Replace(replace), nil
 	}
 }
 
