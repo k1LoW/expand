@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.6](https://github.com/k1LoW/expand/compare/v0.5.5...v0.5.6) - 2023-02-04
+- Bump up go and pkgs version by @k2tzumi in https://github.com/k1LoW/expand/pull/20
+
 ## [v0.5.5](https://github.com/k1LoW/expand/compare/v0.5.4...v0.5.5) - 2022-11-21
 - Fix InterpolateRepFn ( handling env placeholder ) by @k1LoW in https://github.com/k1LoW/expand/pull/18
 
