@@ -60,7 +60,9 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 				if err != nil {
 					return "", err
 				}
-				if quote && token.IsNeedQuoted(line) {
+				if quote && token.IsNeedQuoted(line) ||
+					// If there is a line break in the result of the conversion of what was one line, quote it.
+					strings.Contains(line, "\n") {
 					old := strings.Trim(line, " ")
 					new := strQuote(old)
 					line = strings.Replace(line, old, new, 1)

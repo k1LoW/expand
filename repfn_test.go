@@ -97,6 +97,16 @@ func TestExprRepFn(t *testing.T) {
 			` "{{ hello }}-{{ value }}" `,
 			` world-one `,
 		},
+		{
+			"{{",
+			"}}",
+			map[string]interface{}{
+				"hello": "world\nworld",
+			},
+			`"{{ hello }}"`,
+			`world
+world`,
+		},
 	}
 	for _, tt := range tests {
 		repFn := ExprRepFn(tt.delimStart, tt.delimEnd, tt.env)
