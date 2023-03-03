@@ -99,7 +99,11 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 			}
 		}
 	}
-	return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
+
+	if strings.HasSuffix(s, "\n") && !strings.HasSuffix(tokens[len(tokens)-1].Value, "\n") {
+		return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
+	}
+	return strings.Join(texts, "\n"), nil
 }
 
 func strQuote(s string) string {

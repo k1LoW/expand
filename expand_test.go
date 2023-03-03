@@ -3,6 +3,8 @@ package expand
 import (
 	"os"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestExpandYAML(t *testing.T) {
@@ -11,6 +13,20 @@ func TestExpandYAML(t *testing.T) {
 		envs map[string]string
 		want string
 	}{
+		{
+			`key: value
+key2: value2
+`,
+			map[string]string{},
+			`key: value
+key2: value2
+`},
+		{
+			`key: value
+key2: value2`,
+			map[string]string{},
+			`key: value
+key2: value2`},
 		{
 			`default: "hello ${UNDEFINED:-world}"
 multi: |
@@ -28,7 +44,6 @@ multi: |
   hello world
 
   hello : world :world
-
 `},
 		{
 			`coverage:
@@ -80,7 +95,6 @@ array:
   - hello world
   - |
     hello world
-
 `},
 		{
 			`string: hello ${WORLD}
@@ -99,7 +113,6 @@ multi: |
   hello world
 
   hello : world :world
-
 `},
 		{
 			`test: |
@@ -108,21 +121,18 @@ multi: |
 			map[string]string{},
 			`test: |
   current.url == 'https://example.com/#about'
-
 `},
 		{
 			`key: "hello$"`,
 			map[string]string{},
-			`key: "hello$"
-`,
+			`key: "hello$"`,
 		},
 		{
 			`key: "hello$ ${WORLD}"`,
 			map[string]string{
 				"WORLD": "world",
 			},
-			`key: "hello$ world"
-`,
+			`key: "hello$ world"`,
 		},
 	}
 	for _, tt := range tests {
@@ -133,8 +143,8 @@ multi: |
 			return os.LookupEnv(in)
 		}
 		got := ExpandYAML(tt.in, mapper)
-		if got != tt.want {
-			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
+		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
+			t.Errorf("%s", diff)
 		}
 	}
 }
@@ -195,6 +205,30 @@ envkey: value
 `,
 		},
 		{
+			`key: "${VALUE}\n${VALUE}"`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: "envvalue\nenvvalue"`,
+		},
+		{
+			`key: |
+  ${VALUE}
+  ${VALUE}
+`,
+			map[string]string{
+				"KEY":   "envkey",
+				"VALUE": "envvalue",
+			},
+			true,
+			`key: |
+  envvalue
+  envvalue
+`,
+		},
+		{
 			`key: |
   ${VALUE}
   ${VALUE}`,
@@ -205,8 +239,7 @@ envkey: value
 			true,
 			`key: |
   envvalue
-  envvalue
-`,
+  envvalue`,
 		},
 	}
 	repFn := func(in string) (string, error) {
@@ -220,8 +253,8 @@ envkey: value
 		if err != nil {
 			t.Error(err)
 		}
-		if got != tt.want {
-			t.Errorf("got\n%v\nwant\n%v", got, tt.want)
+		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
+			t.Errorf("%s", diff)
 		}
 	}
 }
