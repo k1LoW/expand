@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.6.0](https://github.com/k1LoW/expand/compare/v0.5.6...v0.6.0) - 2023-03-03
+- Stop giving unnecessary trailing newlines by @k1LoW in https://github.com/k1LoW/expand/pull/22
+- If there is a line break in the result of the conversion of what was one line, quote it. by @k1LoW in https://github.com/k1LoW/expand/pull/24
+
 ## [v0.5.6](https://github.com/k1LoW/expand/compare/v0.5.5...v0.5.6) - 2023-02-04
 - Bump up go and pkgs version by @k2tzumi in https://github.com/k1LoW/expand/pull/20
 
