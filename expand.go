@@ -65,7 +65,16 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 					strings.Contains(line, "\n") {
 					old := strings.Trim(line, " ")
 					new := strQuote(old)
-					line = strings.Replace(line, old, new, 1)
+					// Avoid duplicate quotes heuristically.
+					switch {
+					case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
+						// no quote
+					case strings.HasPrefix(new, `"\"`) && strings.HasSuffix(new, `\""`):
+						new = fmt.Sprintf(`"%s"`, strings.TrimSuffix(strings.TrimPrefix(new, `"\"`), `\""`))
+						line = strings.Replace(line, old, new, 1)
+					default:
+						line = strings.Replace(line, old, new, 1)
+					}
 				}
 			}
 			if len(texts) == 0 {
@@ -87,7 +96,16 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 						strings.Contains(line, "\n") {
 						old := strings.Trim(line, " ")
 						new := strQuote(old)
-						line = strings.Replace(line, old, new, 1)
+						// Avoid duplicate quotes heuristically.
+						switch {
+						case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
+						// no quote
+						case strings.HasPrefix(new, `"\"`) && strings.HasSuffix(new, `\""`):
+							new = fmt.Sprintf(`"%s"`, strings.TrimSuffix(strings.TrimPrefix(new, `"\"`), `\""`))
+							line = strings.Replace(line, old, new, 1)
+						default:
+							line = strings.Replace(line, old, new, 1)
+						}
 					}
 				}
 				if idx == 0 {

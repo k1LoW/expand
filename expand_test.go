@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -154,6 +155,48 @@ key: ${KEY}`,
 			`port: 2202
 key: "hello\nworld"`,
 		},
+		{
+			`key: '${KEY}'
+port: ${PORT}`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`key: 'hello
+world'
+port: 2202`,
+		},
+		{
+			`port: ${PORT}
+key: '${KEY}'`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`port: 2202
+key: 'hello
+world'`,
+		},
+		{
+			`key: "${KEY}"
+port: ${PORT}`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`key: "hello\nworld"
+port: 2202`,
+		},
+		{
+			`port: ${PORT}
+key: "${KEY}"`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`port: 2202
+key: "hello\nworld"`,
+		},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
@@ -165,6 +208,13 @@ key: "hello\nworld"`,
 		got := ExpandYAML(tt.in, mapper)
 		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
 			t.Errorf("%s", diff)
+		}
+		var v interface{}
+		if err := yaml.Unmarshal([]byte(got), &v); err != nil {
+			t.Errorf("%s", err)
+		}
+		if err := yaml.Unmarshal([]byte(tt.want), &v); err != nil {
+			t.Errorf("%s", err)
 		}
 	}
 }
@@ -275,6 +325,13 @@ envkey: value
 		}
 		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
 			t.Errorf("%s", diff)
+		}
+		var v interface{}
+		if err := yaml.Unmarshal([]byte(got), &v); err != nil {
+			t.Errorf("%s", err)
+		}
+		if err := yaml.Unmarshal([]byte(tt.want), &v); err != nil {
+			t.Errorf("%s", err)
 		}
 	}
 }
