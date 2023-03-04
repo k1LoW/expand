@@ -134,6 +134,26 @@ multi: |
 			},
 			`key: "hello$ world"`,
 		},
+		{
+			`key: ${KEY}
+port: ${PORT}`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`key: "hello\nworld"
+port: 2202`,
+		},
+		{
+			`port: ${PORT}
+key: ${KEY}`,
+			map[string]string{
+				"KEY":  "hello\nworld",
+				"PORT": "2202",
+			},
+			`port: 2202
+key: "hello\nworld"`,
+		},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
