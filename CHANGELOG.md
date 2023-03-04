@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.7.0](https://github.com/k1LoW/expand/compare/v0.6.1...v0.7.0) - 2023-03-04
+- Avoid duplicate quotes heuristically by @k1LoW in https://github.com/k1LoW/expand/pull/27
+- Bump golang.org/x/sys from 0.0.0-20220406163625-3f8b81556e12 to 0.1.0 by @dependabot in https://github.com/k1LoW/expand/pull/29
+
 ## [v0.6.1](https://github.com/k1LoW/expand/compare/v0.6.0...v0.6.1) - 2023-03-04
 - Fix oversight from https://github.com/k1LoW/expand/pull/24 by @k1LoW in https://github.com/k1LoW/expand/pull/25
 
