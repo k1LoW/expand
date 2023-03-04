@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.6.1](https://github.com/k1LoW/expand/compare/v0.6.0...v0.6.1) - 2023-03-04
+- Fix oversight from https://github.com/k1LoW/expand/pull/24 by @k1LoW in https://github.com/k1LoW/expand/pull/25
+
 ## [v0.6.0](https://github.com/k1LoW/expand/compare/v0.5.6...v0.6.0) - 2023-03-03
 - Stop giving unnecessary trailing newlines by @k1LoW in https://github.com/k1LoW/expand/pull/22
 - If there is a line break in the result of the conversion of what was one line, quote it. by @k1LoW in https://github.com/k1LoW/expand/pull/24
