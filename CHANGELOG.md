@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.8.0](https://github.com/k1LoW/expand/compare/v0.7.0...v0.8.0) - 2023-05-07
+- Refactor code by @k1LoW in https://github.com/k1LoW/expand/pull/30
+- [BREAKING CHANGE] If the expanded result is a Map or Slice, it is not quoted to be interpreted as inline YAML. by @k1LoW in https://github.com/k1LoW/expand/pull/32
+- [BEAKING CHANGE] Fix sig of ReplaceYAML and Add options ( ReplaceMapKey, QuoteCollection ) by @k1LoW in https://github.com/k1LoW/expand/pull/33
+- Update pkgs by @k1LoW in https://github.com/k1LoW/expand/pull/34
+
 ## [v0.7.0](https://github.com/k1LoW/expand/compare/v0.6.1...v0.7.0) - 2023-03-04
 - Avoid duplicate quotes heuristically by @k1LoW in https://github.com/k1LoW/expand/pull/27
 - Bump golang.org/x/sys from 0.0.0-20220406163625-3f8b81556e12 to 0.1.0 by @dependabot in https://github.com/k1LoW/expand/pull/29
