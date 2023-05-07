@@ -1,6 +1,7 @@
 package expand
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -333,5 +334,67 @@ envkey: value
 		if err := yaml.Unmarshal([]byte(tt.want), &v); err != nil {
 			t.Errorf("%s", err)
 		}
+	}
+}
+
+func TestReplaceYAMLWithExprRepFn(t *testing.T) {
+	const (
+		delimStart = "{{"
+		delimEnd   = "}}"
+	)
+
+	tests := []struct {
+		env           interface{}
+		replaceMapKey bool
+		in            string
+		want          string
+	}{
+		{
+			map[string]interface{}{
+				"hello": "world",
+			},
+			false,
+			`v: "{{ hello }}"`,
+			`v: world`,
+		},
+		{
+			map[string]interface{}{
+				"hello": 3,
+			},
+			false,
+			`v: "{{ hello }}"`,
+			`v: 3`,
+		},
+		{
+			map[string]interface{}{
+				"hello": map[string]interface{}{
+					"foo": "bar",
+				},
+			},
+			false,
+			`v: "{{ hello }}"`,
+			`v: {"foo":"bar"}`,
+		},
+		{
+			map[string]interface{}{
+				"hello": map[string]interface{}{
+					"foo": "bar",
+				},
+			},
+			false,
+			`v:   "{{ hello }}"`,
+			`v:   {"foo":"bar"}`,
+		},
+	}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got, err := ReplaceYAML(tt.in, ExprRepFn(delimStart, delimEnd, tt.env), tt.replaceMapKey)
+			if err != nil {
+				t.Error(err)
+			}
+			if got != tt.want {
+				t.Errorf("got %#v\nwant %#v", got, tt.want)
+			}
+		})
 	}
 }
