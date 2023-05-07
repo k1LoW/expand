@@ -35,46 +35,34 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 	texts := []string{}
 	for _, tk := range tokens {
 		lines := strings.Split(tk.Origin, "\n")
-		expand := false
-		quote := false
-		if replaceMapKey || tk.NextType() != token.MappingValueType {
+		isMapKey := tk.NextType() == token.MappingValueType
+		nte := false // Need to expand
+		qt := false  // Quote target
+		if replaceMapKey || !isMapKey {
 			switch tk.Type {
 			case token.StringType, token.SingleQuoteType, token.DoubleQuoteType:
-				expand = true
+				nte = true
 				if len(lines) == 1 {
-					quote = true
+					qt = true
 				} else if len(lines) == 2 && strings.Trim(lines[1], " ") == "" {
 					if tk.Prev != nil && tk.Prev.Type == token.LiteralType && token.Type(tk.Prev.Indicator) == token.Type(token.BlockScalarIndicator) {
 						// Block scalars does not quote
-						quote = false
+						qt = false
 					} else {
-						quote = true
+						qt = true
 					}
 				}
 			}
 		}
 		if len(lines) == 1 {
 			line := lines[0]
-			if expand && line != "" {
+			if nte && line != "" {
 				line, err = repFn(line)
 				if err != nil {
 					return "", err
 				}
-				if quote && token.IsNeedQuoted(line) ||
-					// If there is a line break in the result of the conversion of what was one line, quote it.
-					strings.Contains(line, "\n") {
-					old := strings.Trim(line, " ")
-					new := strQuote(old)
-					// Avoid duplicate quotes heuristically.
-					switch {
-					case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
-						// no quote
-					case strings.HasPrefix(new, `"\"`) && strings.HasSuffix(new, `\""`):
-						new = fmt.Sprintf(`"%s"`, strings.TrimSuffix(strings.TrimPrefix(new, `"\"`), `\""`))
-						line = strings.Replace(line, old, new, 1)
-					default:
-						line = strings.Replace(line, old, new, 1)
-					}
+				if isNeedQuoted(qt, line) {
+					line = quoteLine(line)
 				}
 			}
 			if len(texts) == 0 {
@@ -86,26 +74,13 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 		} else {
 			for idx, src := range lines {
 				line := src
-				if expand && line != "" {
+				if nte && line != "" {
 					line, err = repFn(line)
 					if err != nil {
 						return "", err
 					}
-					if quote && token.IsNeedQuoted(line) ||
-						// If there is a line break in the result of the conversion of what was one line, quote it.
-						strings.Contains(line, "\n") {
-						old := strings.Trim(line, " ")
-						new := strQuote(old)
-						// Avoid duplicate quotes heuristically.
-						switch {
-						case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
-						// no quote
-						case strings.HasPrefix(new, `"\"`) && strings.HasSuffix(new, `\""`):
-							new = fmt.Sprintf(`"%s"`, strings.TrimSuffix(strings.TrimPrefix(new, `"\"`), `\""`))
-							line = strings.Replace(line, old, new, 1)
-						default:
-							line = strings.Replace(line, old, new, 1)
-						}
+					if isNeedQuoted(qt, line) {
+						line = quoteLine(line)
 					}
 				}
 				if idx == 0 {
@@ -126,14 +101,6 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 		return fmt.Sprintf("%s\n", strings.Join(texts, "\n")), nil
 	}
 	return strings.Join(texts, "\n"), nil
-}
-
-func strQuote(s string) string {
-	u, err := strconv.Unquote(s)
-	if err != nil {
-		return strconv.Quote(s)
-	}
-	return strconv.Quote(u)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
@@ -158,4 +125,34 @@ func ExpandenvYAML(s string) string {
 // of the current environment variables.
 func ExpandenvYAMLBytes(b []byte) []byte {
 	return ExpandYAMLBytes(b, os.LookupEnv)
+}
+
+func quoteOnce(s string) string {
+	u, err := strconv.Unquote(s)
+	if err != nil {
+		return strconv.Quote(s)
+	}
+	return strconv.Quote(u)
+}
+
+func quoteLine(line string) string {
+	old := strings.Trim(line, " ")
+	new := quoteOnce(old)
+	// Avoid duplicate quotes heuristically.
+	switch {
+	case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
+		// no quote
+		return line
+	case strings.HasPrefix(new, `"\"`) && strings.HasSuffix(new, `\""`):
+		new = fmt.Sprintf(`"%s"`, strings.TrimSuffix(strings.TrimPrefix(new, `"\"`), `\""`))
+		return strings.Replace(line, old, new, 1)
+	default:
+		return strings.Replace(line, old, new, 1)
+	}
+}
+
+func isNeedQuoted(quoteTarget bool, line string) bool {
+	return quoteTarget && token.IsNeedQuoted(line) ||
+		// If there is a line break in the result of the conversion of what was one line, quote it.
+		strings.Contains(line, "\n")
 }
