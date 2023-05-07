@@ -320,7 +320,11 @@ envkey: value
 		for k, v := range tt.envs {
 			t.Setenv(k, v)
 		}
-		got, err := ReplaceYAML(tt.in, repFn, tt.replaceMapKey)
+		opts := []Option{}
+		if tt.replaceMapKey {
+			opts = append(opts, ReplaceMapKey())
+		}
+		got, err := ReplaceYAML(tt.in, repFn, opts...)
 		if err != nil {
 			t.Error(err)
 		}
@@ -344,15 +348,17 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 	)
 
 	tests := []struct {
-		env           interface{}
-		replaceMapKey bool
-		in            string
-		want          string
+		env             interface{}
+		replaceMapKey   bool
+		quoteCollection bool
+		in              string
+		want            string
 	}{
 		{
 			map[string]interface{}{
 				"hello": "world",
 			},
+			false,
 			false,
 			`v: "{{ hello }}"`,
 			`v: world`,
@@ -361,6 +367,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			map[string]interface{}{
 				"hello": 3,
 			},
+			false,
 			false,
 			`v: "{{ hello }}"`,
 			`v: 3`,
@@ -372,6 +379,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 				},
 			},
 			false,
+			false,
 			`v: "{{ hello }}"`,
 			`v: {"foo":"bar"}`,
 		},
@@ -381,6 +389,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 					"foo": "bar",
 				},
 			},
+			false,
 			false,
 			`v:   "{{ hello }}"`,
 			`v:   {"foo":"bar"}`,
@@ -392,6 +401,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 				},
 			},
 			false,
+			false,
 			`v: "{{ hello }}"`,
 			`v: {"foo":"ba\nr"}`,
 		},
@@ -402,13 +412,32 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 				},
 			},
 			true,
+			false,
 			`"{{ hello }}": "{{ hello }}"`,
 			`"{\"foo\":\"ba\\nr\"}": {"foo":"ba\nr"}`,
+		},
+		{
+			map[string]interface{}{
+				"hello": map[string]interface{}{
+					"foo": "ba\nr",
+				},
+			},
+			false,
+			true,
+			`v: "{{ hello }}"`,
+			`v: "{\"foo\":\"ba\\nr\"}"`,
 		},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			got, err := ReplaceYAML(tt.in, ExprRepFn(delimStart, delimEnd, tt.env), tt.replaceMapKey)
+			opts := []Option{}
+			if tt.replaceMapKey {
+				opts = append(opts, ReplaceMapKey())
+			}
+			if tt.quoteCollection {
+				opts = append(opts, QuoteCollection())
+			}
+			got, err := ReplaceYAML(tt.in, ExprRepFn(delimStart, delimEnd, tt.env), opts...)
 			if err != nil {
 				t.Error(err)
 			}
