@@ -1,6 +1,7 @@
 package expand
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -61,7 +62,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 				if err != nil {
 					return "", err
 				}
-				if isNeedQuoted(qt, line) {
+				if isNeedQuoted(qt, isMapKey, line) {
 					line = quoteLine(line)
 				}
 			}
@@ -79,7 +80,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 					if err != nil {
 						return "", err
 					}
-					if isNeedQuoted(qt, line) {
+					if isNeedQuoted(qt, isMapKey, line) {
 						line = quoteLine(line)
 					}
 				}
@@ -151,8 +152,29 @@ func quoteLine(line string) string {
 	}
 }
 
-func isNeedQuoted(quoteTarget bool, line string) bool {
-	return quoteTarget && token.IsNeedQuoted(line) ||
+func isNeedQuoted(quoteTarget bool, isMapKey bool, line string) bool {
+	if quoteTarget && token.IsNeedQuoted(line) ||
 		// If there is a line break in the result of the conversion of what was one line, quote it.
-		strings.Contains(line, "\n")
+		strings.Contains(line, "\n") {
+		if isJSONString(line) && !isMapKey {
+			// Not quoting to be interpreted as inline YAML
+			return false
+		}
+		return true
+	}
+	return false
+}
+
+func isJSONString(line string) bool {
+	if !strings.Contains(line, "{") && !strings.Contains(line, "[") {
+		return false
+	}
+	var v any
+	if err := json.Unmarshal([]byte(strings.Trim(line, " ")), &v); err == nil {
+		switch v.(type) {
+		case []any, map[any]any, map[string]any:
+			return true
+		}
+	}
+	return false
 }
