@@ -27,7 +27,14 @@ func (m Mapper) Get(key string) (string, bool) {
 }
 
 // ReplaceYAML replaces the tokens of YAML (string) using repFn.
-func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey bool) (string, error) {
+func ReplaceYAML(s string, repFn func(s string) (string, error), opts ...Option) (string, error) {
+	c := &config{}
+	for _, opt := range opts {
+		if err := opt(c); err != nil {
+			return "", err
+		}
+	}
+
 	var err error
 	tokens := lexer.Tokenize(s)
 	if len(tokens) == 0 {
@@ -39,7 +46,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 		isMapKey := tk.NextType() == token.MappingValueType
 		nte := false // Need to expand
 		qt := false  // Quote target
-		if replaceMapKey || !isMapKey {
+		if c.replaceMapKey || !isMapKey {
 			switch tk.Type {
 			case token.StringType, token.SingleQuoteType, token.DoubleQuoteType:
 				nte = true
@@ -62,7 +69,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 				if err != nil {
 					return "", err
 				}
-				if isNeedQuoted(qt, isMapKey, line) {
+				if isNeedQuoted(qt, isMapKey, c, line) {
 					line = quoteLine(line)
 				}
 			}
@@ -80,7 +87,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 					if err != nil {
 						return "", err
 					}
-					if isNeedQuoted(qt, isMapKey, line) {
+					if isNeedQuoted(qt, isMapKey, c, line) {
 						line = quoteLine(line)
 					}
 				}
@@ -107,7 +114,7 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), replaceMapKey b
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
 func ExpandYAML(s string, mapping func(string) (string, bool)) string {
 	repFn := InterpolateRepFn(mapping)
-	rep, _ := ReplaceYAML(s, repFn, false)
+	rep, _ := ReplaceYAML(s, repFn)
 	return rep
 }
 
@@ -152,10 +159,13 @@ func quoteLine(line string) string {
 	}
 }
 
-func isNeedQuoted(quoteTarget bool, isMapKey bool, line string) bool {
+func isNeedQuoted(quoteTarget bool, isMapKey bool, c *config, line string) bool {
 	if quoteTarget && token.IsNeedQuoted(line) ||
 		// If there is a line break in the result of the conversion of what was one line, quote it.
 		strings.Contains(line, "\n") {
+		if c.quoteCollection {
+			return true
+		}
 		if isJSONString(line) && !isMapKey {
 			// Not quoting to be interpreted as inline YAML
 			return false
