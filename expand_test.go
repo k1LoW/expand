@@ -385,6 +385,26 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v:   "{{ hello }}"`,
 			`v:   {"foo":"bar"}`,
 		},
+		{
+			map[string]interface{}{
+				"hello": map[string]interface{}{
+					"foo": "ba\nr",
+				},
+			},
+			false,
+			`v: "{{ hello }}"`,
+			`v: {"foo":"ba\nr"}`,
+		},
+		{
+			map[string]interface{}{
+				"hello": map[string]interface{}{
+					"foo": "ba\nr",
+				},
+			},
+			true,
+			`"{{ hello }}": "{{ hello }}"`,
+			`"{\"foo\":\"ba\\nr\"}": {"foo":"ba\nr"}`,
+		},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
