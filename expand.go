@@ -160,7 +160,16 @@ func quoteLine(line string) string {
 }
 
 func isNeedQuoted(quoteTarget bool, isMapKey bool, c *config, line string) bool {
-	if quoteTarget && token.IsNeedQuoted(line) ||
+	trimed := strings.TrimSpace(line)
+	if trimed == "" {
+		return false
+	}
+	if trimed == "null" || trimed == "true" || trimed == "false" {
+		return false
+	}
+	stat := getNumberStat(trimed)
+
+	if quoteTarget && !stat.isNum && token.IsNeedQuoted(strings.TrimSpace(line)) ||
 		// If there is a line break in the result of the conversion of what was one line, quote it.
 		strings.Contains(line, "\n") {
 		if c.quoteCollection {
@@ -187,4 +196,100 @@ func isJSONString(line string) bool {
 		}
 	}
 	return false
+}
+
+// Copy from go-yaml/token/token.go
+type numType int
+
+const (
+	numTypeNone numType = iota
+	numTypeBinary
+	numTypeOctet
+	numTypeHex
+	numTypeFloat
+)
+
+type numStat struct {
+	isNum bool
+	typ   numType
+}
+
+func getNumberStat(str string) *numStat {
+	stat := &numStat{}
+	if str == "" {
+		return stat
+	}
+	if str == "-" || str == "." || str == "+" || str == "_" {
+		return stat
+	}
+	if str[0] == '_' {
+		return stat
+	}
+	dotFound := false
+	isNegative := false
+	isExponent := false
+	if str[0] == '-' {
+		isNegative = true
+	}
+	for idx, c := range str {
+		switch c {
+		case 'x':
+			if (isNegative && idx == 2) || (!isNegative && idx == 1) {
+				continue
+			}
+		case 'o':
+			if (isNegative && idx == 2) || (!isNegative && idx == 1) {
+				continue
+			}
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			continue
+		case 'a', 'b', 'c', 'd', 'e', 'f', 'A', 'B', 'C', 'D', 'E', 'F':
+			if (len(str) > 2 && str[0] == '0' && str[1] == 'x') ||
+				(len(str) > 3 && isNegative && str[1] == '0' && str[2] == 'x') {
+				// hex number
+				continue
+			}
+			if c == 'b' && ((isNegative && idx == 2) || (!isNegative && idx == 1)) {
+				// binary number
+				continue
+			}
+			if (c == 'e' || c == 'E') && dotFound {
+				// exponent
+				isExponent = true
+				continue
+			}
+		case '.':
+			if dotFound {
+				// multiple dot
+				return stat
+			}
+			dotFound = true
+			continue
+		case '-':
+			if idx == 0 || isExponent {
+				continue
+			}
+		case '+':
+			if idx == 0 || isExponent {
+				continue
+			}
+		case '_':
+			continue
+		}
+		return stat
+	}
+	stat.isNum = true
+	switch {
+	case dotFound:
+		stat.typ = numTypeFloat
+	case strings.HasPrefix(str, "0b") || strings.HasPrefix(str, "-0b"):
+		stat.typ = numTypeBinary
+	case strings.HasPrefix(str, "0x") || strings.HasPrefix(str, "-0x"):
+		stat.typ = numTypeHex
+	case strings.HasPrefix(str, "0o") || strings.HasPrefix(str, "-0o"):
+		stat.typ = numTypeOctet
+	case (len(str) > 1 && str[0] == '0') || (len(str) > 1 && str[0] == '-' && str[1] == '0'):
+		stat.typ = numTypeOctet
+	}
+	return stat
 }
