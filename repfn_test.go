@@ -123,7 +123,52 @@ world`,
 				"hello": "-3",
 			},
 			`"{{ hello }}"`,
-			`'-3'`,
+			`"-3"`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": "0o777",
+			},
+			`"{{ hello }}"`,
+			`"0o777"`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": 0o777,
+			},
+			`"{{ hello }}"`,
+			`511`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": -3.4,
+			},
+			`"{{ hello }}"`,
+			`-3.4`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": false,
+			},
+			`"{{ hello }}"`,
+			`false`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": "false",
+			},
+			`"{{ hello }}"`,
+			`false`,
 		},
 	}
 	for _, tt := range tests {

@@ -33,8 +33,6 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 	}
 }
 
-var numberRe = regexp.MustCompile(`^[+-]?\d+(?:\.\d+)?$`)
-
 func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 	const strDQuote = `"`
 	return func(in string) (string, error) {
@@ -65,8 +63,9 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 			switch v := o.(type) {
 			case string:
 				// Stringify only one expression.
-				if strings.TrimSpace(in) == m[0] && numberRe.MatchString(v) {
-					s = fmt.Sprintf("'%s'", v)
+				stat := getNumberStat(v)
+				if strings.TrimSpace(in) == m[0] && stat.isNum {
+					s = fmt.Sprintf("%q", v)
 				} else {
 					s = v
 				}
