@@ -220,7 +220,7 @@ value: -123`,
 		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
 			t.Errorf("%s", diff)
 		}
-		var v interface{}
+		var v any
 		if err := yaml.Unmarshal([]byte(got), &v); err != nil {
 			t.Errorf("%s", err)
 		}
@@ -341,7 +341,7 @@ envkey: value
 		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
 			t.Errorf("%s", diff)
 		}
-		var v interface{}
+		var v any
 		if err := yaml.Unmarshal([]byte(got), &v); err != nil {
 			t.Errorf("%s", err)
 		}
@@ -358,14 +358,14 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 	)
 
 	tests := []struct {
-		env             interface{}
+		env             any
 		replaceMapKey   bool
 		quoteCollection bool
 		in              string
 		want            string
 	}{
 		{
-			map[string]interface{}{
+			map[string]any{
 				"hello": "world",
 			},
 			false,
@@ -374,7 +374,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v: world`,
 		},
 		{
-			map[string]interface{}{
+			map[string]any{
 				"hello": 3,
 			},
 			false,
@@ -383,8 +383,8 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v: 3`,
 		},
 		{
-			map[string]interface{}{
-				"hello": map[string]interface{}{
+			map[string]any{
+				"hello": map[string]any{
 					"foo": "bar",
 				},
 			},
@@ -394,8 +394,8 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v: {"foo":"bar"}`,
 		},
 		{
-			map[string]interface{}{
-				"hello": map[string]interface{}{
+			map[string]any{
+				"hello": map[string]any{
 					"foo": "bar",
 				},
 			},
@@ -405,8 +405,8 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v:   {"foo":"bar"}`,
 		},
 		{
-			map[string]interface{}{
-				"hello": map[string]interface{}{
+			map[string]any{
+				"hello": map[string]any{
 					"foo": "ba\nr",
 				},
 			},
@@ -416,8 +416,8 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`v: {"foo":"ba\nr"}`,
 		},
 		{
-			map[string]interface{}{
-				"hello": map[string]interface{}{
+			map[string]any{
+				"hello": map[string]any{
 					"foo": "ba\nr",
 				},
 			},
@@ -427,8 +427,8 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			`"{\"foo\":\"ba\\nr\"}": {"foo":"ba\nr"}`,
 		},
 		{
-			map[string]interface{}{
-				"hello": map[string]interface{}{
+			map[string]any{
+				"hello": map[string]any{
 					"foo": "ba\nr",
 				},
 			},
