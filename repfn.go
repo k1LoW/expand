@@ -35,7 +35,7 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 
 var numberRe = regexp.MustCompile(`^[+-]?\d+(?:\.\d+)?$`)
 
-func ExprRepFn(delimStart, delimEnd string, env interface{}) repFn {
+func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 	const strDQuote = `"`
 	return func(in string) (string, error) {
 		if !strings.Contains(in, delimStart) {
@@ -80,7 +80,7 @@ func ExprRepFn(delimStart, delimEnd string, env interface{}) repFn {
 				s = strconv.Itoa(v)
 			case bool:
 				s = strconv.FormatBool(v)
-			case map[string]interface{}, []interface{}:
+			case map[string]any, []any:
 				bytes, err := json.Marshal(v)
 				if err != nil {
 					return in, err

@@ -65,14 +65,14 @@ func TestExprRepFn(t *testing.T) {
 	tests := []struct {
 		delimStart string
 		delimEnd   string
-		env        interface{}
+		env        any
 		in         string
 		want       string
 	}{
 		{
 			"{{",
 			"}}",
-			map[string]interface{}{
+			map[string]any{
 				"hello": "world",
 			},
 			" {{ hello }} {{ value }} ",
@@ -81,7 +81,7 @@ func TestExprRepFn(t *testing.T) {
 		{
 			"{{",
 			"}}",
-			map[string]interface{}{
+			map[string]any{
 				"hello": "world",
 			},
 			` "{{ hello }}" "{{ value }}" `,
@@ -90,7 +90,7 @@ func TestExprRepFn(t *testing.T) {
 		{
 			"{{",
 			"}}",
-			map[string]interface{}{
+			map[string]any{
 				"hello": "world",
 				"value": "one",
 			},
@@ -100,12 +100,30 @@ func TestExprRepFn(t *testing.T) {
 		{
 			"{{",
 			"}}",
-			map[string]interface{}{
+			map[string]any{
 				"hello": "world\nworld",
 			},
 			`"{{ hello }}"`,
 			`world
 world`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": -3,
+			},
+			`"{{ hello }}"`,
+			`-3`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": "-3",
+			},
+			`"{{ hello }}"`,
+			`'-3'`,
 		},
 	}
 	for _, tt := range tests {
