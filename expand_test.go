@@ -198,6 +198,16 @@ key: "${KEY}"`,
 			`port: 2202
 key: "hello\nworld"`,
 		},
+		{
+			`key: "${KEY}"
+value: -${VALUE}`,
+			map[string]string{
+				"KEY":   "hello\nworld",
+				"VALUE": "123",
+			},
+			`key: "hello\nworld"
+value: -123`,
+		},
 	}
 	for _, tt := range tests {
 		for k, v := range tt.envs {
