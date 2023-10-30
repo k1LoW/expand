@@ -168,7 +168,7 @@ world`,
 				"hello": "false",
 			},
 			`"{{ hello }}"`,
-			`false`,
+			`"false"`,
 		},
 	}
 	for _, tt := range tests {

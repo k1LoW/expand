@@ -66,6 +66,8 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 				stat := getNumberStat(v)
 				if strings.TrimSpace(in) == m[0] && stat.isNum {
 					s = fmt.Sprintf("%q", v)
+				} else if strings.TrimSpace(in) == m[0] && (v == "true" || v == "false") {
+					s = fmt.Sprintf("%q", v)
 				} else {
 					s = v
 				}
