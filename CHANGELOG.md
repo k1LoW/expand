@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.10.0](https://github.com/k1LoW/expand/compare/v0.9.0...v0.10.0) - 2023-10-30
+### Breaking Changes 🛠
+- String types "true" and "false" are converted as string types as much as possible. by @k1LoW in https://github.com/k1LoW/expand/pull/39
+
 ## [v0.9.0](https://github.com/k1LoW/expand/compare/v0.8.0...v0.9.0) - 2023-10-09
 ### Breaking Changes 🛠
 - Update goccy/go-yaml to v0.11.2 by @k1LoW in https://github.com/k1LoW/expand/pull/35
