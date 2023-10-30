@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.10.1](https://github.com/k1LoW/expand/compare/v0.10.0...v0.10.1) - 2023-10-30
+
 ## [v0.10.0](https://github.com/k1LoW/expand/compare/v0.9.0...v0.10.0) - 2023-10-30
 ### Breaking Changes 🛠
 - String types "true" and "false" are converted as string types as much as possible. by @k1LoW in https://github.com/k1LoW/expand/pull/39
