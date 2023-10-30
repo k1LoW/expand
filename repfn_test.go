@@ -170,6 +170,20 @@ world`,
 			`"{{ hello }}"`,
 			`false`,
 		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"map": map[string]any{
+					"int":     123,
+					"strint":  "123",
+					"bool":    true,
+					"strbool": "true",
+				},
+			},
+			`"{{ map }}"`,
+			`{"bool":true,"int":123,"strbool":"true","strint":"123"}`,
+		},
 	}
 	for _, tt := range tests {
 		repFn := ExprRepFn(tt.delimStart, tt.delimEnd, tt.env)

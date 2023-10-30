@@ -384,6 +384,24 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 		},
 		{
 			map[string]any{
+				"hello": 1,
+			},
+			false,
+			false,
+			`v: "{{ hello }}2"`,
+			`v: "12"`,
+		},
+		{
+			map[string]any{
+				"hello": 1,
+			},
+			false,
+			false,
+			`v: "2{{ hello }}"`,
+			`v: "21"`,
+		},
+		{
+			map[string]any{
 				"hello": map[string]any{
 					"foo": "bar",
 				},
