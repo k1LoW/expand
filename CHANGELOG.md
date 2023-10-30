@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.10.0](https://github.com/k1LoW/expand/compare/v0.9.0...v0.10.0) - 2023-10-30
+### Breaking Changes 🛠
+- String types "true" and "false" are converted as string types as much as possible. by @k1LoW in https://github.com/k1LoW/expand/pull/39
+
+## [v0.9.0](https://github.com/k1LoW/expand/compare/v0.8.0...v0.9.0) - 2023-10-09
+### Breaking Changes 🛠
+- Update goccy/go-yaml to v0.11.2 by @k1LoW in https://github.com/k1LoW/expand/pull/35
+### Other Changes
+- Fix ExprRepFn to stringify correctly. by @k1LoW in https://github.com/k1LoW/expand/pull/37
+- Update github.com/antonmedv/expr to v1.15.3 by @k1LoW in https://github.com/k1LoW/expand/pull/38
+
 ## [v0.8.0](https://github.com/k1LoW/expand/compare/v0.7.0...v0.8.0) - 2023-05-07
 - Refactor code by @k1LoW in https://github.com/k1LoW/expand/pull/30
 - [BREAKING CHANGE] If the expanded result is a Map or Slice, it is not quoted to be interpreted as inline YAML. by @k1LoW in https://github.com/k1LoW/expand/pull/32
