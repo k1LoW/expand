@@ -174,6 +174,24 @@ world`,
 			"{{",
 			"}}",
 			map[string]any{
+				"hello": false,
+			},
+			`{{ hello }}world`,
+			`falseworld`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
+				"hello": "false",
+			},
+			`{{ hello }}world`,
+			`falseworld`,
+		},
+		{
+			"{{",
+			"}}",
+			map[string]any{
 				"map": map[string]any{
 					"int":     123,
 					"strint":  "123",
