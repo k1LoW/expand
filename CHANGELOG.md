@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.11.0](https://github.com/k1LoW/expand/compare/v0.10.1...v0.11.0) - 2023-12-30
+### Other Changes
+- Update expr (change org) by @k1LoW in https://github.com/k1LoW/expand/pull/43
+
 ## [v0.10.1](https://github.com/k1LoW/expand/compare/v0.10.0...v0.10.1) - 2023-10-30
 
 ## [v0.10.0](https://github.com/k1LoW/expand/compare/v0.9.0...v0.10.0) - 2023-10-30
