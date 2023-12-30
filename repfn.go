@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/antonmedv/expr"
+	"github.com/expr-lang/expr"
 	"github.com/buildkite/interpolate"
 )
 
