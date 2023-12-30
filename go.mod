@@ -3,8 +3,8 @@ module github.com/k1LoW/expand
 go 1.20
 
 require (
-	github.com/antonmedv/expr v1.15.3
 	github.com/buildkite/interpolate v0.0.0-20200526001904-07f35b4ae251
+	github.com/expr-lang/expr v1.15.7
 	github.com/goccy/go-yaml v1.11.2
 	github.com/google/go-cmp v0.5.9
 )
