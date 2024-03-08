@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/expr-lang/expr"
 	"github.com/buildkite/interpolate"
+	"github.com/expr-lang/expr"
 )
 
 type repFn func(in string) (string, error)
@@ -37,7 +37,7 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 	const strDQuote = `"`
 	return func(in string) (string, error) {
 		if !strings.Contains(in, delimStart) {
-			return in, nil
+			return unescapeDelims(delimStart, delimEnd, in), nil
 		}
 
 		if strings.Count(in, strDQuote) >= 2 {
@@ -94,7 +94,7 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 			oldnew = append(oldnew, m[0], s)
 		}
 		rep := strings.NewReplacer(oldnew...)
-		return rep.Replace(in), nil
+		return unescapeDelims(delimStart, delimEnd, rep.Replace(in)), nil
 	}
 }
 
@@ -134,4 +134,19 @@ func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
 	wd := in[si : se+len(delimEnd)]
 	id := strings.TrimSuffix(strings.TrimPrefix(wd, delimStart), delimEnd)
 	return []string{wd, id}, se + len(delimEnd)
+}
+
+func unescapeDelims(delimStart, delimEnd, in string) string {
+	var (
+		escapedDelimStart string
+		escapedDelimEnd   string
+	)
+	for _, r := range delimStart {
+		escapedDelimStart += fmt.Sprintf("\\%s", string(r))
+	}
+	for _, r := range delimEnd {
+		escapedDelimEnd += fmt.Sprintf("\\%s", string(r))
+	}
+	rep := strings.NewReplacer(escapedDelimStart, delimStart, escapedDelimEnd, delimEnd)
+	return rep.Replace(in)
 }
