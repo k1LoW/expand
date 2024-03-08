@@ -137,6 +137,10 @@ func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
 }
 
 func unescapeDelims(delimStart, delimEnd, in string) string {
+	const (
+		eeStartToken = "__E_E_DELIM_START__"
+		eeEndToken   = "__E_E_DELIM_END__"
+	)
 	var (
 		escapedDelimStart string
 		escapedDelimEnd   string
@@ -144,9 +148,12 @@ func unescapeDelims(delimStart, delimEnd, in string) string {
 	for _, r := range delimStart {
 		escapedDelimStart += fmt.Sprintf("\\%s", string(r))
 	}
+	escapedescapedDelimStart := fmt.Sprintf("\\%s", escapedDelimStart)
 	for _, r := range delimEnd {
 		escapedDelimEnd += fmt.Sprintf("\\%s", string(r))
 	}
-	rep := strings.NewReplacer(escapedDelimStart, delimStart, escapedDelimEnd, delimEnd)
-	return rep.Replace(in)
+	escapedescapedDelimEnd := fmt.Sprintf("\\%s", escapedDelimEnd)
+	rep := strings.NewReplacer(escapedescapedDelimStart, eeStartToken, escapedescapedDelimEnd, eeEndToken, escapedDelimStart, delimStart, escapedDelimEnd, delimEnd)
+	rep2 := strings.NewReplacer(eeStartToken, escapedDelimStart, eeEndToken, escapedDelimEnd)
+	return rep2.Replace(rep.Replace(in))
 }

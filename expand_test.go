@@ -469,7 +469,7 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 		{
 			map[string]any{
 				"hello": map[string]any{
-					"foo": "ba\nr",
+					"foo": "bar",
 				},
 			},
 			false,
@@ -487,6 +487,39 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			true,
 			`v: '\{\{ {{ hello }} \}\}'`,
 			`v: '{{ {"foo":"bar"} }}'`,
+		},
+		{
+			map[string]any{
+				"hello": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
+			`v: '\\{\{ hello \\}\}'`,
+			`v: '\{\{ hello \}\}'`,
+		},
+		{
+			map[string]any{
+				"hello": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
+			`v: '\\\{\{ hello \\\}\}'`,
+			`v: '\\{\{ hello \\}\}'`,
+		},
+		{
+			map[string]any{
+				"hello": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
+			`v: '\\{\\{ hello \\}\\}'`,
+			`v: '\\{\\{ hello \\}\\}'`,
 		},
 	}
 	for i, tt := range tests {
