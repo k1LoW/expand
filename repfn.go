@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/expr-lang/expr"
 	"github.com/buildkite/interpolate"
+	"github.com/expr-lang/expr"
 )
 
 type repFn func(in string) (string, error)
@@ -16,14 +16,14 @@ type repFn func(in string) (string, error)
 var envPlaceholderRe = regexp.MustCompile(`\${.+}`)
 
 func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
-	const repToken = "__NOT_INTERPOLATE_START__"
+	const notRep = "__NOT_INTERPOLATE_START__"
 	mapper := Mapper{mapping: mapping}
 	return func(in string) (string, error) {
 		if !envPlaceholderRe.MatchString(in) {
 			return in, nil
 		}
-		r := strings.NewReplacer("${", "${", "$", repToken)
-		rr := strings.NewReplacer(repToken, "$")
+		r := strings.NewReplacer("${", "${", "$", notRep)
+		rr := strings.NewReplacer(notRep, "$")
 
 		replace, err := interpolate.Interpolate(mapper, r.Replace(in))
 		if err != nil {
@@ -37,7 +37,7 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 	const strDQuote = `"`
 	return func(in string) (string, error) {
 		if !strings.Contains(in, delimStart) {
-			return in, nil
+			return unescapeDelims(delimStart, delimEnd, in), nil
 		}
 
 		if strings.Count(in, strDQuote) >= 2 {
@@ -94,7 +94,7 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 			oldnew = append(oldnew, m[0], s)
 		}
 		rep := strings.NewReplacer(oldnew...)
-		return rep.Replace(in), nil
+		return unescapeDelims(delimStart, delimEnd, rep.Replace(in)), nil
 	}
 }
 
@@ -134,4 +134,26 @@ func trySubstr(delimStart, delimEnd, in string) ([]string, int) {
 	wd := in[si : se+len(delimEnd)]
 	id := strings.TrimSuffix(strings.TrimPrefix(wd, delimStart), delimEnd)
 	return []string{wd, id}, se + len(delimEnd)
+}
+
+func unescapeDelims(delimStart, delimEnd, in string) string {
+	const (
+		eeStartRep = "__E_E_DELIM_START__" //
+		eeEndRep   = "__E_E_DELIM_END__"
+	)
+	var (
+		escapedDelimStart string
+		escapedDelimEnd   string
+	)
+	for _, r := range delimStart {
+		escapedDelimStart += fmt.Sprintf("\\%s", string(r))
+	}
+	escapedescapedDelimStart := fmt.Sprintf("\\%s", escapedDelimStart)
+	for _, r := range delimEnd {
+		escapedDelimEnd += fmt.Sprintf("\\%s", string(r))
+	}
+	escapedescapedDelimEnd := fmt.Sprintf("\\%s", escapedDelimEnd)
+	rep := strings.NewReplacer(escapedescapedDelimStart, eeStartRep, escapedescapedDelimEnd, eeEndRep, escapedDelimStart, delimStart, escapedDelimEnd, delimEnd)
+	rep2 := strings.NewReplacer(eeStartRep, escapedDelimStart, eeEndRep, escapedDelimEnd)
+	return rep2.Replace(rep.Replace(in))
 }
