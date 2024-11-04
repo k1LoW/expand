@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.13.0](https://github.com/k1LoW/expand/compare/v0.12.0...v0.13.0) - 2024-11-04
+### Other Changes
+- chore(deps): bump the dependencies group with 4 updates by @dependabot in https://github.com/k1LoW/expand/pull/48
+- chore(deps): bump golangci/golangci-lint-action from 2 to 6 in the dependencies group by @dependabot in https://github.com/k1LoW/expand/pull/46
+
 ## [v0.12.0](https://github.com/k1LoW/expand/compare/v0.11.0...v0.12.0) - 2024-03-08
 ### Breaking Changes 🛠
 - Escape/unescape delimiters by @k1LoW in https://github.com/k1LoW/expand/pull/44
