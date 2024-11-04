@@ -74,7 +74,7 @@ func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 			case int64:
 				s = strconv.Itoa(int(v))
 			case uint64:
-				s = strconv.Itoa(int(v))
+				s = fmt.Sprintf("%d", v)
 			case float64:
 				s = strconv.FormatFloat(v, 'f', -1, 64)
 			case int:
