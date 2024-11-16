@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.14.0](https://github.com/k1LoW/expand/compare/v0.13.0...v0.14.0) - 2024-11-16
+### Other Changes
+- chore(deps): bump github.com/goccy/go-yaml from 1.13.4 to 1.13.7 in the dependencies group by @dependabot in https://github.com/k1LoW/expand/pull/49
+- Update goccy/go-yaml by @k1LoW in https://github.com/k1LoW/expand/pull/51
+
 ## [v0.13.0](https://github.com/k1LoW/expand/compare/v0.12.0...v0.13.0) - 2024-11-04
 ### Other Changes
 - chore(deps): bump the dependencies group with 4 updates by @dependabot in https://github.com/k1LoW/expand/pull/48
