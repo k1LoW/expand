@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.15.0](https://github.com/k1LoW/expand/compare/v0.14.0...v0.15.0) - 2024-12-02
+### Breaking Changes 🛠
+- Add no-quote condition by @k1LoW in https://github.com/k1LoW/expand/pull/53
+
 ## [v0.14.0](https://github.com/k1LoW/expand/compare/v0.13.0...v0.14.0) - 2024-11-16
 ### Other Changes
 - chore(deps): bump github.com/goccy/go-yaml from 1.13.4 to 1.13.7 in the dependencies group by @dependabot in https://github.com/k1LoW/expand/pull/49
