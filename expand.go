@@ -148,6 +148,9 @@ func quoteLine(line string) string {
 	new := quoteOnce(old)
 	// Avoid duplicate quotes heuristically.
 	switch {
+	case strings.HasPrefix(old, `"\"`) && strings.HasSuffix(old, `\""`):
+		// no quote
+		return line
 	case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
 		// no quote
 		return line
