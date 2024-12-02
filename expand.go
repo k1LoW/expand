@@ -42,6 +42,9 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), opts ...Option)
 	}
 	texts := []string{}
 	for _, tk := range tokens {
+		if tk.Error != "" {
+			return "", fmt.Errorf("parse error: %s", tk.Error)
+		}
 		lines := strings.Split(tk.Origin, "\n")
 		isMapKey := tk.NextType() == token.MappingValueType
 		nte := false // Need to expand
@@ -148,6 +151,9 @@ func quoteLine(line string) string {
 	new := quoteOnce(old)
 	// Avoid duplicate quotes heuristically.
 	switch {
+	case strings.HasPrefix(old, `"\"`) && strings.HasSuffix(old, `\""`):
+		// no quote
+		return line
 	case strings.HasPrefix(new, `"'`) && strings.HasSuffix(new, `'"`):
 		// no quote
 		return line

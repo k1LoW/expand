@@ -208,25 +208,42 @@ value: -${VALUE}`,
 			`key: "hello\nworld"
 value: -123`,
 		},
+		{
+			`key: "'ok'"`,
+			map[string]string{},
+			`key: "'ok'"`,
+		},
+		{
+			`key: '"ok"'`,
+			map[string]string{},
+			`key: '"ok"'`,
+		},
+		{
+			`key: "\"ok\""`,
+			map[string]string{},
+			`key: "\"ok\""`,
+		},
 	}
-	for _, tt := range tests {
-		for k, v := range tt.envs {
-			t.Setenv(k, v)
-		}
-		mapper := func(in string) (string, bool) {
-			return os.LookupEnv(in)
-		}
-		got := ExpandYAML(tt.in, mapper)
-		if diff := cmp.Diff(got, tt.want, nil); diff != "" {
-			t.Errorf("%s", diff)
-		}
-		var v any
-		if err := yaml.Unmarshal([]byte(got), &v); err != nil {
-			t.Errorf("%s", err)
-		}
-		if err := yaml.Unmarshal([]byte(tt.want), &v); err != nil {
-			t.Errorf("%s", err)
-		}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("%d_%s", i, tt.in), func(t *testing.T) {
+			for k, v := range tt.envs {
+				t.Setenv(k, v)
+			}
+			mapper := func(in string) (string, bool) {
+				return os.LookupEnv(in)
+			}
+			got := ExpandYAML(tt.in, mapper)
+			if diff := cmp.Diff(got, tt.want, nil); diff != "" {
+				t.Errorf("%s", diff)
+			}
+			var v any
+			if err := yaml.Unmarshal([]byte(got), &v); err != nil {
+				t.Errorf("%s", err)
+			}
+			if err := yaml.Unmarshal([]byte(tt.want), &v); err != nil {
+				t.Errorf("%s", err)
+			}
+		})
 	}
 }
 
@@ -321,6 +338,24 @@ envkey: value
 			`key: |
   envvalue
   envvalue`,
+		},
+		{
+			`key: "'ok'"`,
+			map[string]string{},
+			true,
+			`key: "'ok'"`,
+		},
+		{
+			`key: '"ok"'`,
+			map[string]string{},
+			true,
+			`key: '"ok"'`,
+		},
+		{
+			`key: "\"ok\""`,
+			map[string]string{},
+			true,
+			`key: "\"ok\""`,
 		},
 	}
 	repFn := func(in string) (string, error) {
@@ -454,17 +489,6 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			true,
 			`v: "{{ hello }}"`,
 			`v: "{\"foo\":\"ba\\nr\"}"`,
-		},
-		{
-			map[string]any{
-				"hello": map[string]any{
-					"foo": "ba\nr",
-				},
-			},
-			false,
-			true,
-			`v: "\{\{ hello \}\}"`,
-			`v: "{{ hello }}"`,
 		},
 		{
 			map[string]any{
