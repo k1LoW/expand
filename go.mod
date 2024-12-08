@@ -5,7 +5,6 @@ go 1.22
 require (
 	github.com/buildkite/interpolate v0.1.4
 	github.com/expr-lang/expr v1.16.9
-	github.com/goccy/go-yaml v1.15.4
+	github.com/goccy/go-yaml v1.15.7
 	github.com/google/go-cmp v0.6.0
-	github.com/k1LoW/single v1.0.1
 )

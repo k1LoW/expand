@@ -2,9 +2,7 @@ github.com/buildkite/interpolate v0.1.4 h1:qacB5WR+7+Ol1xiJ4xZajHh/CGDdhcMesXR+V
 github.com/buildkite/interpolate v0.1.4/go.mod h1:dHnrwHew5O8VNOAgMDpwRlFnhL5VSN6M1bHVmRZ9Ccc=
 github.com/expr-lang/expr v1.16.9 h1:WUAzmR0JNI9JCiF0/ewwHB1gmcGw5wW7nWt8gc6PpCI=
 github.com/expr-lang/expr v1.16.9/go.mod h1:8/vRC7+7HBzESEqt5kKpYXxrxkr31SaO8r40VO/1IT4=
-github.com/goccy/go-yaml v1.15.4 h1:Xk5iHVvnsv6KD0HrMuZ0CiJbfdR9KUYQw7U/t9binGQ=
-github.com/goccy/go-yaml v1.15.4/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
+github.com/goccy/go-yaml v1.15.7 h1:L7XuKpd/A66X4w/dlk08lVfiIADdy79a1AzRoIefC98=
+github.com/goccy/go-yaml v1.15.7/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/k1LoW/single v1.0.1 h1:/8rZEfeMFJM9BpFs+E7P1roZ0LHXKwXM+qGvZYtx3zM=
-github.com/k1LoW/single v1.0.1/go.mod h1:N9AI4DnR/qGOd82dwNRST6c4OHqO6RkcQkKPJnz0S78=
