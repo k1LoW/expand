@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.15.2](https://github.com/k1LoW/expand/compare/v0.15.1...v0.15.2) - 2024-12-23
+### Other Changes
+- chore(deps): bump the dependencies group with 2 updates by @dependabot in https://github.com/k1LoW/expand/pull/58
+
 ## [v0.15.1](https://github.com/k1LoW/expand/compare/v0.15.0...v0.15.1) - 2024-12-16
 ### Other Changes
 - chore(deps): bump github.com/goccy/go-yaml from 1.15.4 to 1.15.10 in the dependencies group across 1 directory by @dependabot in https://github.com/k1LoW/expand/pull/56
