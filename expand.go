@@ -16,7 +16,7 @@ type Mapper struct {
 	mapping func(string) (string, bool)
 }
 
-// Implement Env
+// Implement Env.
 var _ interpolate.Env = Mapper{}
 
 func (m Mapper) Get(key string) (string, bool) {
@@ -115,14 +115,14 @@ func ReplaceYAML(s string, repFn func(s string) (string, error), opts ...Option)
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML (string) based on the mapping function.
-func ExpandYAML(s string, mapping func(string) (string, bool)) string {
+func ExpandYAML(s string, mapping func(string) (string, bool)) string { //nolint:revive
 	repFn := InterpolateRepFn(mapping)
 	rep, _ := ReplaceYAML(s, repFn)
 	return rep
 }
 
 // ExpandYAML replaces ${var} or $var in the values of YAML ([]byte) based on the mapping function.
-func ExpandYAMLBytes(b []byte, mapping func(string) (string, bool)) []byte {
+func ExpandYAMLBytes(b []byte, mapping func(string) (string, bool)) []byte { //nolint:revive
 	return []byte(ExpandYAML(string(b), mapping))
 }
 
@@ -204,7 +204,7 @@ func isJSONString(line string) bool {
 	return false
 }
 
-// Copy from go-yaml/token/token.go
+// Copy from go-yaml/token/token.go.
 type numType int
 
 const (
