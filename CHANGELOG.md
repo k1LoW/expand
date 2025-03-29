@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.16.1](https://github.com/k1LoW/expand/compare/v0.16.0...v0.16.1) - 2025-03-29
+### Other Changes
+- chore(deps): bump github.com/expr-lang/expr from 1.17.0 to 1.17.1 in the dependencies group by @dependabot in https://github.com/k1LoW/expand/pull/70
+
 ## [v0.16.0](https://github.com/k1LoW/expand/compare/v0.15.5...v0.16.0) - 2025-03-17
 ### Other Changes
 - chore(deps): bump the dependencies group across 1 directory with 3 updates by @dependabot in https://github.com/k1LoW/expand/pull/68
