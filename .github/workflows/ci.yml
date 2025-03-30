@@ -30,7 +30,7 @@ jobs:
           lax: true
           
       - name: Run lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
 
       - name: Run tests
         run: make ci
