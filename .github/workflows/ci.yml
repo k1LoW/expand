@@ -28,9 +28,13 @@ jobs:
         uses: k1LoW/oldstable@v1
         with:
           lax: true
-          
+
       - name: Run lint
-        uses: golangci/golangci-lint-action@v6
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          fail_level: warning
+          go_version_file: go.mod
+          cache: true
 
       - name: Run tests
         run: make ci
