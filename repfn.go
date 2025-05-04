@@ -35,7 +35,7 @@ func InterpolateRepFn(mapping func(string) (string, bool)) repFn {
 
 func ExprRepFn(delimStart, delimEnd string, env any) repFn {
 	const strDQuote = `"`
-	return func(in string) (string, error) {
+	return func(in string) (_ string, err error) {
 		if !strings.Contains(in, delimStart) {
 			return unescapeDelims(delimStart, delimEnd, in), nil
 		}
@@ -141,18 +141,38 @@ func unescapeDelims(delimStart, delimEnd, in string) string {
 		eeStartRep = "__E_E_DELIM_START__" //
 		eeEndRep   = "__E_E_DELIM_END__"
 	)
+
+	// Detect if the input is double quoted, huristically.
+	var doubleQuoted bool
+	if strings.HasPrefix(strings.TrimSpace(in), `"`) && strings.HasSuffix(strings.TrimSpace(in), `"`) {
+		doubleQuoted = true
+	}
 	var (
 		escapedDelimStart string
 		escapedDelimEnd   string
 	)
 	for _, r := range delimStart {
+		if doubleQuoted {
+			escapedDelimStart += fmt.Sprintf("\\\\%s", string(r))
+			continue
+		}
 		escapedDelimStart += fmt.Sprintf("\\%s", string(r))
 	}
 	escapedescapedDelimStart := fmt.Sprintf("\\%s", escapedDelimStart)
+	if doubleQuoted {
+		escapedescapedDelimStart = fmt.Sprintf("\\\\%s", escapedDelimStart)
+	}
 	for _, r := range delimEnd {
+		if doubleQuoted {
+			escapedDelimEnd += fmt.Sprintf("\\\\%s", string(r))
+			continue
+		}
 		escapedDelimEnd += fmt.Sprintf("\\%s", string(r))
 	}
 	escapedescapedDelimEnd := fmt.Sprintf("\\%s", escapedDelimEnd)
+	if doubleQuoted {
+		escapedescapedDelimEnd = fmt.Sprintf("\\\\%s", escapedDelimEnd)
+	}
 	rep := strings.NewReplacer(escapedescapedDelimStart, eeStartRep, escapedescapedDelimEnd, eeEndRep, escapedDelimStart, delimStart, escapedDelimEnd, delimEnd)
 	rep2 := strings.NewReplacer(eeStartRep, escapedDelimStart, eeEndRep, escapedDelimEnd)
 	return rep2.Replace(rep.Replace(in))
