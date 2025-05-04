@@ -520,6 +520,49 @@ func TestReplaceYAMLWithExprRepFn(t *testing.T) {
 			},
 			false,
 			true,
+			`v: 'hello \{\{ {{ hello }} \}\}'`,
+			`v: 'hello {{ {"foo":"bar"} }}'`,
+		},
+		{
+			map[string]any{
+				"hello": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
+			`v: |-
+hello \{\{ name \}\}`,
+			`v: |-
+hello {{ name }}`,
+		},
+		{
+			map[string]any{
+				"vars": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
+			`/post:
+  post:
+    body:
+      application/json:
+        name: "Hello {{ vars.foo }} \\{\\{ name \\}\\}"`,
+			`/post:
+  post:
+    body:
+      application/json:
+        name: "Hello bar {{ name }}"`,
+		},
+		{
+			map[string]any{
+				"hello": map[string]any{
+					"foo": "bar",
+				},
+			},
+			false,
+			true,
 			`v: '\\{\{ hello \\}\}'`,
 			`v: '\{\{ hello \}\}'`,
 		},
