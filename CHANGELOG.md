@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.16.2](https://github.com/k1LoW/expand/compare/v0.16.1...v0.16.2) - 2025-05-04
+### Fix bug 🐛
+- fix: improve delimiter escaping for double-quoted strings by @k1LoW in https://github.com/k1LoW/expand/pull/75
+
 ## [v0.16.1](https://github.com/k1LoW/expand/compare/v0.16.0...v0.16.1) - 2025-04-08
 ### Other Changes
 - chore(deps): bump github.com/expr-lang/expr from 1.17.0 to 1.17.1 in the dependencies group by @dependabot in https://github.com/k1LoW/expand/pull/70
