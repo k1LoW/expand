@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.16.3](https://github.com/k1LoW/expand/compare/v0.16.2...v0.16.3) - 2025-10-26
+### Other Changes
+- chore(deps): bump github.com/expr-lang/expr from 1.17.2 to 1.17.3 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/77
+- chore(deps): bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/k1LoW/expand/pull/79
+- chore(deps): bump github.com/expr-lang/expr from 1.17.4 to 1.17.5 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/80
+- chore: setup tagpr labels by @k1LoW in https://github.com/k1LoW/expand/pull/85
+- chore(deps): bump github.com/expr-lang/expr from 1.17.5 to 1.17.6 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/82
+- chore(deps): bump the dependencies group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/k1LoW/expand/pull/83
+
 ## [v0.16.2](https://github.com/k1LoW/expand/compare/v0.16.1...v0.16.2) - 2025-05-04
 ### Fix bug 🐛
 - fix: improve delimiter escaping for double-quoted strings by @k1LoW in https://github.com/k1LoW/expand/pull/75
