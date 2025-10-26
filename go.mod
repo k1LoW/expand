@@ -1,6 +1,6 @@
 module github.com/k1LoW/expand
 
-go 1.23
+go 1.24
 
 require (
 	github.com/buildkite/interpolate v0.1.5
