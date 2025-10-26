@@ -25,7 +25,7 @@ jobs:
           check-latest: true
 
       - name: Check oldstable
-        uses: k1LoW/oldstable@v1
+        uses: k1LoW/oldstable@v2
         with:
           lax: true
 
