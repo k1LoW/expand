@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.16.4](https://github.com/k1LoW/expand/compare/v0.16.3...v0.16.4) - 2025-10-26
+### Other Changes
+- chore(deps): bump k1LoW/oldstable from 1 to 2 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/86
+
 ## [v0.16.3](https://github.com/k1LoW/expand/compare/v0.16.2...v0.16.3) - 2025-10-26
 ### Other Changes
 - chore(deps): bump github.com/expr-lang/expr from 1.17.2 to 1.17.3 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/77
