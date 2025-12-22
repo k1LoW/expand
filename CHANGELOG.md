@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.16.6](https://github.com/k1LoW/expand/compare/v0.16.5...v0.16.6) - 2025-12-22
+### Other Changes
+- chore(deps): bump github.com/goccy/go-yaml from 1.19.0 to 1.19.1 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/92
+
 ## [v0.16.5](https://github.com/k1LoW/expand/compare/v0.16.4...v0.16.5) - 2025-12-17
 ### Other Changes
 - chore(deps): bump github.com/expr-lang/expr from 1.17.6 to 1.17.7 by @dependabot[bot] in https://github.com/k1LoW/expand/pull/90
