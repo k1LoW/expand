@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.16.8](https://github.com/k1LoW/expand/compare/v0.16.7...v0.16.8) - 2026-06-29
+
+### Other Changes
+- chore(deps): bump github.com/expr-lang/expr from 1.17.7 to 1.17.8 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/96
+- chore(deps): bump actions/checkout from 6 to 7 in the dependencies group across 1 directory by @dependabot[bot] in https://github.com/k1LoW/expand/pull/98
+
 ## [v0.16.7](https://github.com/k1LoW/expand/compare/v0.16.6...v0.16.7) - 2026-01-12
 ### Other Changes
 - chore(deps): bump github.com/goccy/go-yaml from 1.19.1 to 1.19.2 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/expand/pull/94
